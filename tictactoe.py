@@ -156,7 +156,7 @@ def is_board_full(board, empty = 0):
 
     return True
 
-def play_match(lang, board_rows, board_cols, computer, human, starter, empty = 0, symbol_dict = {0: ' ', 1: 'x', 2: 'o'}):
+def play_match(lang, board_rows, board_cols, computer_starts):
     """
     Handles a single match of tic-tac-toe and returns the winner
 
@@ -168,10 +168,15 @@ def play_match(lang, board_rows, board_cols, computer, human, starter, empty = 0
       starter: identifier of whomever starts
       empty: identifier of unoccupied cells
     """
+    computer = 1
+    human = 2
+    empty = 0
+    symbol_dict = {0: ' ', computer if computer_starts else human: 'x', human if computer_starts else computer: 'o'}
+
     winner = empty
     board = [[0 for i in range(board_cols)] for j in range(board_rows)] # New board
     
-    computer_turn = starter is computer
+    computer_turn = computer_starts
 
     while True:
 
@@ -198,7 +203,7 @@ def play_match(lang, board_rows, board_cols, computer, human, starter, empty = 0
         if is_board_full(board, empty):
             return empty
     
-def play_game(games_to_win, lang, board_rows, board_cols, symbol_dict = {0: ' ', 1: 'x', 2: 'o'} ):
+def play_game(games_to_win, lang, board_rows, board_cols):
     """
     Plays one game of tic-tac-toe. Plays matches until one player gets games_to_win
 
@@ -213,16 +218,15 @@ def play_game(games_to_win, lang, board_rows, board_cols, symbol_dict = {0: ' ',
 
     Returns name of winner of game
     """
-    
     winner = -1
     score = [0, 0, 0] #Ties, Computer vs Human
-    starter = 1 # Who plays first next
+    computer_starts = True # Who plays first next
     player_lang = [messages[lang][i] for i in (10,11,12)]
     
     while winner is -1:
-        print(messages[lang][5].format(player_lang[starter], symbol_dict[starter])) # Who plays first
+        print(messages[lang][5].format(player_lang[1 + (not computer_starts)], 'x') ) # Who plays first
 
-        winner_match = play_match(lang, 3, 3, 1, 2, starter, 0, symbol_dict)
+        winner_match = play_match(lang, 3, 3, computer_starts)
         
         score[winner_match] = score[winner_match]+1
 
@@ -231,7 +235,7 @@ def play_game(games_to_win, lang, board_rows, board_cols, symbol_dict = {0: ' ',
         if winner_match is not 0 and score[winner_match] >= games_to_win:
             winner = winner_match                
 
-        starter = 1 if starter == 2 else 2
+        computer_starts = not computer_starts
     
     return player_lang[winner]
     
