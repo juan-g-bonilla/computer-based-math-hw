@@ -292,11 +292,11 @@ def main():
     lang = "en_US"
     games_to_win = 3
     board_size = 3
-    exit_flag = False
+    cont = True
 
-    while not exit_flag: # Repeat as many games as desired
+    while cont: # Repeat as many games as desired
         winner = play_game(games_to_win, lang, board_size, board_size)
-        exit_flag = input(messages[lang][9].format(winner)).lower == "y"
+        cont = input(messages[lang][9].format(winner)) == 'y'
 
 if __name__ == "__main__":
     test() # Uncomment to unit-test most functions
